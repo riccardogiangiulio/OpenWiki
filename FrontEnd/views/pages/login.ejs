@@ -7,29 +7,12 @@
     <link rel="stylesheet" href="/style/output.css">
 </head>
 <body>
-    <div class="flex flex-col justify-center items-center min-h-screen bg-base-200 gap-4 p-4">
-        <h1 class="text-4xl font-bold">OpenWiki</h1>
-        <!-- card -->
-        <div class="flex flex-col md:flex-row rounded-xl w-full max-w-2xl bg-base-100 overflow-hidden">
-            <!-- image -->
-            <div class="w-full h-20 md:h-auto bg-cover bg-center" style="background-image: url(https://images.pexels.com/photos/5212363/pexels-photo-5212363.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1);"></div>
-            <!-- form -->
-            <div class="w-full p-8">
-                <h2 class="text-2xl font-bold">Accedi</h2>
-                <form id="loginForm">
-                    <label class="form-control w-full max-w-xs">
-                        <div class="label">
-                            <input type="email" placeholder="Email" class="input">
-                        </div>
-                    </label>
-                    <label class="form-control w-full max-w-xs">
-                        <div class="label">
-                            <input type="password" placeholder="Password" class="input">
-                        </div>
-                    </label>
-                    <button type="submit" class="btn btn-primary w-full">Accedi</button>
-                    <br>
-                </form>
+    <form id="loginForm" class="mt-4 mx-auto flex flex-col justify-center gap-4 bg-gray-100 p-4 rounded-md max-w-sm">
+        <input type="email" placeholder="Email" class="input">
+        <input type="password" placeholder="Password" class="input">
+        <button type="submit" class="btn btn-primary">Accedi</button>
+        <br>
+    </form>
                 <!-- separator -->
                 <hr class="my-4 border-base-200 border-2">
                 <h6 class="text-center text-gray-500">Se non hai ancora un account</h6>

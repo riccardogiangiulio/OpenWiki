@@ -51,7 +51,6 @@ userForm.addEventListener("submit", (e) => {
   }
 
   const url = "http://localhost:8000/signIn";
-  console.log("test 2")
   
   fetch(url, {
     method: "POST",

@@ -20,4 +20,8 @@ app.get('/signIn', (req,res) =>{
     res.render('pages/signIn')
 });
 
+app.get('/dashboard',(req,res) => {
+    res.render('pages/dashboard')
+});
+
 app.listen(3000);

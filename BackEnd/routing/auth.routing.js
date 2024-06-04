@@ -10,8 +10,7 @@ export default function authRouting(app){
             }
         });
         if(!user){
-            res.status = 422;
-            res.json({message: 'credenziali errate'});
+            res.status(422).json({message: 'credenziali errate'});
             return;
         }
         const token = jwt.sign(
