@@ -1,4 +1,4 @@
-import  express  from  'express';
+import express from 'express';
 
 const  app  =  express();
 
@@ -12,6 +12,12 @@ app.get('/', (req, res) => {
     res.render('pages/home');
 })
 
+app.get('/login', (req,res) =>{
+    res.render('pages/login')
+});
 
+app.get('/signIn', (req,res) =>{
+    res.render('pages/signIn')
+});
 
 app.listen(3000);

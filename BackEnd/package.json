@@ -4,7 +4,9 @@
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
     "express": "^4.19.2",
-    "mongodb": "^6.6.2",
+    "jsonwebtoken": "^9.0.2",
+    "mongodb": "^6.7.0",
+    "validate.js": "^0.13.1",
     "wikipedia": "^2.1.2"
   },
   "name": "backend",
