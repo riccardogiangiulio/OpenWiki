@@ -1,10 +1,9 @@
 import wiki from 'wikipedia';
 import prisma from '../db/prisma.js';
-import jwt from 'jsonwebtoken';
 import isLoggedIn from '../src/middleware/isLoggedIn.js';
 
 export default function getResultsWiki(app) {
-    app.post('/dashboard',isLoggedIn, async (req, res) => {
+    app.post('/dashboard', isLoggedIn, async (req, res) => {
         try {
             const { titolo } = req.body;
             wiki.setLang('it');
@@ -52,21 +51,17 @@ export default function getResultsWiki(app) {
 
     app.post('/textDownload', isLoggedIn, async (req, res) => {
         try {
-            const { title } = req.body;
-            const decodedTitle = decodeURIComponent(title); // Decodifica il titolo
+            const { title, overwrite } = req.body;
+            const decodedTitle = decodeURIComponent(title);
             console.log('Titolo ricevuto per il download:', decodedTitle);
-            
-            // Imposta la lingua di Wikipedia su italiano
+    
             wiki.setLang('it');
-            
-            // Ottieni la pagina di Wikipedia
             const page = await wiki.page(decodedTitle);
             const text = await page.content();
             const summary = await page.summary();
             const mainImage = summary.originalimage?.source || null;
             const userId = req.user.id;
-            
-            // Controlla se esiste già un articolo con lo stesso pageId nel database
+    
             const existingArticle = await prisma.article.findUnique({
                 where: {
                     pageId: summary.pageid,
@@ -74,10 +69,27 @@ export default function getResultsWiki(app) {
             });
     
             if (existingArticle) {
-                // Se l'articolo esiste già, restituisci un flag indicando che l'articolo è già stato scaricato in precedenza
-                return res.status(200).json({ articleExists: true });
+                if (overwrite) {
+                    const updatedArticle = await prisma.article.update({
+                        where: { pageId: summary.pageid },
+                        data: {
+                            text,
+                            mainImage,
+                            userId: userId,
+                        }
+                    });
+                    return res.status(200).json({ 
+                        message: 'Articolo aggiornato con successo', 
+                        article: updatedArticle 
+                    });
+                } else {
+                    return res.status(200).json({ 
+                        articleExists: true, 
+                        message: 'Articolo già presente nel database', 
+                        article: existingArticle 
+                    });
+                }
             } else {
-                // Crea un nuovo articolo nel database
                 const newArticle = await prisma.article.create({
                     data: {
                         title: decodedTitle,
@@ -88,14 +100,11 @@ export default function getResultsWiki(app) {
                         userId: userId,
                     },
                 });
-    
-                // Invia la risposta con l'articolo creato
                 res.status(200).json({ message: 'Articolo salvato con successo', article: newArticle });
             }
         } catch (error) {
-            console.error(`Errore nel salvataggio dell'articolo: ${error}`);
-            res.status(500).json({ error: 'Errore nel salvataggio dell\'articolo' });
+            console.error(`Errore nel salvataggio dell'articolo: ${error.message}`);
+            res.status(500).json({ error: 'Errore nel salvataggio dell\'articolo. Riprova più tardi.' });
         }
-    });
-    
+    });        
 }

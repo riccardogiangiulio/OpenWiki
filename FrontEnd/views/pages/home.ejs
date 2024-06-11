@@ -7,7 +7,24 @@
     <link rel="stylesheet" href="/style/output.css">
 </head>
 <body>
-    <div class="hero min-h-screen" style="background-image: url(https://images.unsplash.com/photo-1567177662154-dfeb4c93b6ae?q=80&w=3264&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D);">
+  <div class="navbar bg-blue-600 text-white">
+    <div class="navbar-start">
+        <div class="dropdown">
+            <button tabindex="0" class="btn btn-ghost lg:hidden">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h8m-8 6h16" /></svg>
+            </button>
+        </div>
+        <a class="text-2xl font-bold pl-4" href="#">OpenWiki</a>
+    </div>
+    <div class="navbar-center hidden lg:flex">
+        <ul class="menu menu-horizontal px-1">
+        </ul>
+    </div>
+    <div class="navbar-end">
+      <a href="/login" class="btn btn-ghost">Accedi</a>
+    </div>
+  </div>
+    <div class="hero min-h-screen">
         <div class="hero-overlay bg-opacity-60"></div>
         <div class="hero-content text-center text-neutral-content">
           <div class="max-w-md">
@@ -16,11 +33,33 @@
             <a href="/login">
                 <button class="btn btn-primary">Accedi</button>
             </a>
- 
           </div>
         </div>
     </div>
+    <!-- Sezione delle caratteristiche -->
+    <section id="features" class="py-16 bg-gray-100">
+      <div class="container mx-auto">
+          <h2 class="text-3xl font-bold text-center mb-8">Le Nostre Caratteristiche</h2>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+              <!-- Caratteristica 1 -->
+              <div class="bg-white p-6 rounded-lg shadow-md">
+                  <h3 class="text-xl font-bold mb-4">Ricerca Avanzata</h3>
+                  <p class="text-gray-700">Effettua ricerche avanzate per trovare rapidamente gli articoli di tuo interesse.</p>
+              </div>
+              <!-- Caratteristica 2 -->
+              <div class="bg-white p-6 rounded-lg shadow-md">
+                  <h3 class="text-xl font-bold mb-4">Download Locale</h3>
+                  <p class="text-gray-700">Scarica gli articoli direttamente sul tuo dispositivo per accedervi quando vuoi.</p>
+              </div>
+              <!-- Caratteristica 3 -->
+              <div class="bg-white p-6 rounded-lg shadow-md">
+                  <h3 class="text-xl font-bold mb-4">Visual Semplice</h3>
+                  <p class="text-gray-700">Visualizza gli articoli e modficali a tuo piacimento.</p>
+              </div>
+          </div>
+      </div>
+  </section>
 
-    <script  src="//cdnjs.cloudflare.com/ajax/libs/validate.js/0.13.1/validate.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/validate.js/0.13.1/validate.min.js"></script>
 </body>
 </html>
