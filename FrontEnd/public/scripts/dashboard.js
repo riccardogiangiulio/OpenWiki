@@ -17,7 +17,8 @@ searchForm.addEventListener('submit', async (e) => {
         const res = await fetch('http://localhost:8000/dashboard', {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json',
+              'Authorization': 'Bearer ' + localStorage.getItem('token'),
+              'Content-Type': 'application/json',
             },
             body: JSON.stringify({ titolo: searchInp }),
         });
@@ -30,39 +31,42 @@ searchForm.addEventListener('submit', async (e) => {
 });
 
 async function downloadArticle(title) {
-  try {
-      console.log('Titolo per il download:', title); // Aggiungi questo log per debug
+    try {
+        console.log('Titolo per il download:', title); // Aggiungi questo log per debug
 
-      const encodedTitle = encodeURIComponent(title);
-      const res = await fetch('http://localhost:8000/textDownload', {
-          method: 'POST',
-          headers: {
-              'Authorization': 'Bearer ' + localStorage.getItem('token'),
-              'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({ title: encodedTitle }),
-      });
+        const encodedTitle = encodeURIComponent(title);
+        const res = await fetch('http://localhost:8000/textDownload', {
+            method: 'POST',
+            headers: {
+                'Authorization': 'Bearer ' + localStorage.getItem('token'),
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ title: encodedTitle }),
+        });
+        const data = await res.json();
 
-      if (!res.ok) {
-          if (res.status === 401) {
-              throw new Error('Unauthorized');
-          } else if (res.status === 403) {
-              throw new Error('Forbidden');
-          } else {
-              throw new Error('Errore durante il download dell\'articolo');
-          }
-      }
+        // Controlla se l'articolo esiste già nel database
+        if (data.articleExists) {
+            const downloadAgain = confirm('Questo articolo è già stato scaricato in precedenza. Vuoi scaricarlo di nuovo?');
+            if (!downloadAgain) {
+                return;
+            }
+        } else {
+            alert('Articolo scaricato con successo!');
+        }
 
-      const data = await res.json();
-      console.log('Articolo scaricato con successo:', data);
-  } catch (error) {
-      console.error('Errore durante il download dell\'articolo:', error.message);
-  }
+        // Gestisci il download dell'articolo qui, se necessario
+
+    } catch (error) {
+        console.error('Errore durante il download dell\'articolo:', error.message);
+    }
 }
+
 
 
 async function getFullArticleText(title) {
     try {
+        // Effettua una richiesta al server per ottenere il testo completo dell'articolo
         const res = await fetch('http://localhost:8000/textView', {
             method: 'POST',
             headers: {
@@ -72,6 +76,7 @@ async function getFullArticleText(title) {
         });
         const data = await res.json();
 
+        // Prepara l'HTML per visualizzare l'articolo
         const imagesHtml = data.mainImage ? `<img src="${data.mainImage}" alt="Immagine principale" class="w-full mb-4 rounded-lg shadow-md">` : '';
 
         articleText.innerHTML = `
@@ -79,11 +84,34 @@ async function getFullArticleText(title) {
             <p>${data.text}</p>
             ${imagesHtml}
         `;
+        // Controlla se l'articolo esiste già nel local storage
+        const savedArticles = JSON.parse(localStorage.getItem('articles')) || [];
+        const articleExists = savedArticles.find(article => article.title === title);
+
+        if (articleExists) {
+            // Notifica all'utente che l'articolo è già stato scaricato e chiedi se vuole scaricarlo di nuovo
+            const downloadAgain = confirm('Questo articolo è già stato scaricato in precedenza. Vuoi scaricarlo di nuovo e sovrascrivere la voce esistente?');
+            if (downloadAgain) {
+                // Aggiorna l'articolo esistente nel local storage
+                const updatedArticles = savedArticles.map(article => 
+                    article.title === title ? { title: data.title, text: data.text, mainImage: data.mainImage } : article
+                );
+                localStorage.setItem('articles', JSON.stringify(updatedArticles));
+                alert('Download effettuato!');
+            }
+        } else {
+            // Salva il nuovo articolo nel local storage
+            savedArticles.push({ title: data.title, text: data.text, mainImage: data.mainImage });
+            localStorage.setItem('articles', JSON.stringify(savedArticles));
+        }
     } catch (error) {
+        // Gestione degli errori
         console.error('Errore nel recupero del testo completo:', error);
         articleText.innerHTML = '<p>Errore nel recupero del testo completo.</p>';
     }
 }
+
+
 
 function renderResults(data) {
     resultsList.innerHTML = '';

@@ -55,29 +55,47 @@ export default function getResultsWiki(app) {
             const { title } = req.body;
             const decodedTitle = decodeURIComponent(title); // Decodifica il titolo
             console.log('Titolo ricevuto per il download:', decodedTitle);
-
+            
+            // Imposta la lingua di Wikipedia su italiano
             wiki.setLang('it');
+            
+            // Ottieni la pagina di Wikipedia
             const page = await wiki.page(decodedTitle);
             const text = await page.content();
             const summary = await page.summary();
             const mainImage = summary.originalimage?.source || null;
-
             const userId = req.user.id;
-
-            const newArticle = await prisma.article.create({
-                data: {
-                    title: decodedTitle,
-                    text,
-                    url: `https://it.wikipedia.org/wiki/${encodeURIComponent(decodedTitle)}`,
+            
+            // Controlla se esiste già un articolo con lo stesso pageId nel database
+            const existingArticle = await prisma.article.findUnique({
+                where: {
                     pageId: summary.pageid,
-                    mainImage: mainImage,
-                    userId: userId,
-                },
+                }
             });
-            res.status(200).json({ message: 'Articolo salvato con successo', article: newArticle });
+    
+            if (existingArticle) {
+                // Se l'articolo esiste già, restituisci un flag indicando che l'articolo è già stato scaricato in precedenza
+                return res.status(200).json({ articleExists: true });
+            } else {
+                // Crea un nuovo articolo nel database
+                const newArticle = await prisma.article.create({
+                    data: {
+                        title: decodedTitle,
+                        text,
+                        url: `https://it.wikipedia.org/wiki/${encodeURIComponent(decodedTitle)}`,
+                        pageId: summary.pageid,
+                        mainImage: mainImage,
+                        userId: userId,
+                    },
+                });
+    
+                // Invia la risposta con l'articolo creato
+                res.status(200).json({ message: 'Articolo salvato con successo', article: newArticle });
+            }
         } catch (error) {
             console.error(`Errore nel salvataggio dell'articolo: ${error}`);
             res.status(500).json({ error: 'Errore nel salvataggio dell\'articolo' });
         }
     });
+    
 }
