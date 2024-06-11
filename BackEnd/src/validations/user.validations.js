@@ -46,7 +46,6 @@ export function createUserValidation(req, res, next) {
         }
     })
     .then(() => {
-        console.log('next');
         next(); // Passa al middleware successivo se la validazione ha successo
     }, errors => {
         console.log(errors);

@@ -1,9 +1,10 @@
-import { MongoClient } from 'mongodb';
-import  express  from  'express';
+import express from 'express';
 import cors from "cors";
 import "dotenv/config";
 import userRouting from '../routing/user.routing.js'
 import authRouting from '../routing/auth.routing.js'
+import getResultsWiki from '../routing/wiki.routing.js'
+import validate from 'validate.js';
 
 
 const app = express();
@@ -17,7 +18,8 @@ app.use(cors({
 
 userRouting(app);
 authRouting(app);
-        
+getResultsWiki(app)
+
 app.listen(process.env.PORT, () => {
     console.log(`Application listening at ${process.env.PORT}`);
 });

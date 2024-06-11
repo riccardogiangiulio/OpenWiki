@@ -9,12 +9,13 @@ export default function authRouting(app){
                 password: req.body.password,
             }
         });
+        console.log(user);
         if(!user){
             res.status(422).json({message: 'credenziali errate'});
             return;
         }
         const token = jwt.sign(
-            user,
+            { id: user.id, email: user.email },
             process.env.JWT_SECRET,
             {
                 expiresIn: '1y'

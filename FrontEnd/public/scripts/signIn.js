@@ -1,14 +1,11 @@
-console.log("funzionaaaaa");
+const userForm = document.querySelector("#userForm");
+const userModal = document.querySelector("#userModal");
 
 function openCreateUserModal() {
   userModal.showModal();
   userForm.reset();
 }
 
-const userForm = document.querySelector("#userForm");
-const userModal = document.querySelector("#userModal");
-
-// create new user
 userForm.addEventListener("submit", (e) => {
   e.preventDefault();
 
@@ -60,7 +57,6 @@ userForm.addEventListener("submit", (e) => {
       email,
       password,
       passwordConfirmation
-      
     }),
     headers: {
       "Content-Type": "application/json",
@@ -75,7 +71,6 @@ userForm.addEventListener("submit", (e) => {
         return;
       }else{
         userModal.close();
-        window.location.href = '/login';
       }
     });
 });
